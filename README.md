@@ -1,6 +1,6 @@
 # Ex2-FLASHING-OF-LEDS-WITH-LPC-1768
 ## AIM: 
-                   To interface and toggle the led with ARM LPC 1768 microprocessor           
+     To interface and toggle the led with ARM LPC 1768 microprocessor           
            
 ## COMPONENTS REQUIRED:
  HARDWARE:
@@ -51,7 +51,46 @@ Startuplpc17xx.s, delay.c , gpio.c , sysytemlpc17xx.c, main.c
 Header:
 delay.h, gpio.h, stdulils.h
 ## PROGRAM:
+```
+   #include <lpc17xx.h>
+#include "pwm.h"
+#include "delay.h"
 
+#define CYCLE_TIME 255
+
+/* start the main program */
+int main() 
+{
+    int dutyCycle;
+    SystemInit();             /* Clock and PLL configuration */ 
+    PWM_Init(CYCLE_TIME);     /* Initialize the PWM module and the Cycle time(Ton+Toff) is set to 255(similar to arduino)*/
+    PWM_Start(PWM_2|PWM_3|PWM_4|PWM_5); /* Enable PWM output on PWM_1-PWM_4 (P2_0 - P2_3) */
+
+    while(1)
+    {
+
+        for(dutyCycle=0;dutyCycle<CYCLE_TIME;dutyCycle++) /* Increase the Brightness of the Leds */
+        {
+            PWM_SetDutyCycle(PWM_2,dutyCycle);  //P2_1
+            PWM_SetDutyCycle(PWM_3,dutyCycle);  //P2_2
+            PWM_SetDutyCycle(PWM_4,dutyCycle);  //P2_3
+            PWM_SetDutyCycle(PWM_5,dutyCycle);  //P2_4
+            DELAY_ms(500);
+        }
+
+        for(dutyCycle=CYCLE_TIME;dutyCycle>0;dutyCycle--) /* Decrease the Brightness of the Leds */
+        {
+            PWM_SetDutyCycle(PWM_1,dutyCycle);  //P2_0
+            PWM_SetDutyCycle(PWM_2,dutyCycle);  //P2_1
+            PWM_SetDutyCycle(PWM_3,dutyCycle);  //P2_2
+            PWM_SetDutyCycle(PWM_4,dutyCycle);  //P2_3
+            DELAY_ms(500);
+        }
+    }                              
+}
+```
 ## OUTPUT
+![WhatsApp Image 2026-03-17 at 10 52 11 AM](https://github.com/user-attachments/assets/c43d312d-47f2-42f1-a3a7-682455521d26)
+
 ## RESULT:
 Thus a LED is interfaced with ARM LPC1768 microprocessor and its blinking was verified successfully.
